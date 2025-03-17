@@ -7,10 +7,10 @@ import { Mail, Github, Twitter } from "lucide-react"
 
 const teamMembers = [
   {
-    name: "Tanishk Narula",
+    name: "Roshani Singh",
     role: "Lead Developer",
     bio: "Proficient in GenAI and full-stack development",
-    image: "https://avataaars.io/?avatarStyle=Transparent&topType=LongHairBob&accessoriesType=Prescription02&hairColor=BrownDark&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=Hoodie&clotheColor=Gray02&eyeType=Default&eyebrowType=UpDown&mouthType=Serious&skinColor=Light",
+    image: "https://avataaars.io/?",
     social: {
       twitter: "https://twitter.com/infinitani",
       github: "https://github.com/imtani",
