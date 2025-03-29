@@ -4,8 +4,7 @@ fastapi
 model 
 pickle
 numpy 
-pandas 
-numpy 
+pandas
 re
 nltk
 groq

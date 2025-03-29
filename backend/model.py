@@ -59,6 +59,100 @@ class NewsBiasDetector:
             'biased_adjectives': ['corrupt', 'radical', 'extremist', 'dictatorial', 'anti-national', 
                                 'revolutionary', 'historic', 'transformative', 'disastrous']
         }
+        
+        # Default NewsAPI key - replace with your actual key
+        self.default_api_key = "9b9ad6a918884349a9a75f2d5c2c6f78"
+        
+    def fetch_stories(self, category=None, query=None, count=10):
+        """
+        Fetch news stories from NewsAPI and analyze them for bias
+        
+        Args:
+            category: News category (business, entertainment, health, science, sports, technology)
+            query: Search query
+            count: Number of stories to fetch
+            
+        Returns:
+            List of analyzed stories
+        """
+        if not self.newsapi:
+            try:
+                from newsapi import NewsApiClient
+                self.newsapi = NewsApiClient(api_key=self.default_api_key)
+            except (ImportError, Exception) as e:
+                print(f"Error initializing NewsAPI: {e}")
+                return self._get_sample_stories(count)
+        
+        try:
+            # Fetch top headlines or search results
+            if query:
+                response = self.newsapi.get_everything(
+                    q=query,
+                    language='en',
+                    page_size=count,
+                    sort_by='relevancy'
+                )
+            else:
+                response = self.newsapi.get_top_headlines(
+                    category=category,
+                    language='en',
+                    page_size=count
+                )
+            
+            stories = []
+            for idx, article in enumerate(response.get('articles', [])):
+                if not article.get('content'):
+                    continue
+                    
+                # Basic analysis without full text to save processing time
+                processed_text = self.preprocess_text(article.get('description', '') + ' ' + article.get('title', ''))
+                sentiment = self.sia.polarity_scores(processed_text)
+                
+                # Count sources
+                source_count = 1  # At minimum the article itself is a source
+                if article.get('content'):
+                    # Rough estimation of additional sources by counting quotes
+                    quotes = len(re.findall(r'"[^"]*"', article.get('content', '')))
+                    source_count += min(quotes, 20)  # Cap at reasonable number
+                
+                # Quick bias estimation based on loaded words
+                bias_score = 0
+                for category, words in self.loaded_words.items():
+                    bias_score += sum(1 for word in processed_text.split() if word in words)
+                bias_score = min(100, bias_score * 10)  # Scale from 0-100
+                
+                # Estimate accuracy based on source reputation
+                # This is a simplified estimate - in real app would use more factors
+                accuracy = 60 + (40 - min(bias_score/2, 40))
+                
+                story = {
+                    "id": str(idx + 1),
+                    "title": article.get('title', 'Untitled Story'),
+                    "description": article.get('description', 'No description available'),
+                    "url": article.get('url', ''),
+                    "urlToImage": article.get('urlToImage', ''),
+                    "publishedAt": article.get('publishedAt', ''),
+                    "source": article.get('source', {}).get('name', 'Unknown Source'),
+                    "type": "important" if accuracy > 80 else "viral",
+                    "metrics": {
+                        "accuracy": int(accuracy),
+                        "bias": int(bias_score),
+                        "sources": source_count
+                    }
+                }
+                
+                stories.append(story)
+            
+            return stories
+                
+        except Exception as e:
+            print(f"Error fetching stories from NewsAPI: {e}")
+            return self._get_sample_stories(count)
+            
+    def _get_sample_stories(self, count=10):
+        """Return sample stories when NewsAPI is unavailable"""
+        sample_stories = []
+        return sample_stories[:count]
     
     def collect_data(self, sources=None, categories=None, sample_size=1000):
         """

@@ -8,8 +8,8 @@ import { Mail, Github, Twitter } from "lucide-react"
 const teamMembers = [
   {
     name: "Roshani Singh",
-    role: "Lead Developer",
-    bio: "Proficient in GenAI and full-stack development",
+    role: "Front End Developer",
+    bio: "Proficient in Front-End, Framer-Motion development",
     image: "https://avataaars.io/?",
     social: {
       twitter: "https://twitter.com/infinitani",
@@ -25,6 +25,16 @@ const teamMembers = [
     social: {
       github: "https://github.com/nishkarsh925",
       email: "nishcodingzone@gmail.com"
+    }
+  },
+  {
+    name: "Aarav Aggarwal",
+    role: "Backend Devloper",
+    bio: "Expert in Bavkend, Fast-API, Database-Integration",
+    image: "https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortWaved&accessoriesType=Prescription01&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light",
+    social: {
+      github: "https://github.com/aaravaggarwal3535",
+      email: "aaravaggarwal@gmail.com"
     }
   },
 ];
