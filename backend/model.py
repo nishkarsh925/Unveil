@@ -688,7 +688,7 @@ if __name__ == "__main__":
     # Train word embeddings
     detector.train_word_embeddings(df['processed_text'])
     
-    # Train model
+    # Train_model
     detector.train_model(X, y)
     
     # Save model
